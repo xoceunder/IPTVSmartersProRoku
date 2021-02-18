@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="LoadingScene" extends="Scene">
+<interface><field id="mk" type="string"/></interface>
+<children>
+<ComponentLibrary id="SampleComponentLib" uri=""/>
+<Group id="grp">
+	<Group id="lbl">
+	    <Poster width="1920" height="1080" translation="[0,0]" uri="pkg:/images/background.jpg"/>
+		<Label id="lblText" text="Loading IPTV Smarters Pro..." translation="[0, 600]" horizAlign="center" width="1920" height="1080" />
+	</Group>
+</Group>
+</children>
+<script type="text/brightscript" >
+<![CDATA[
+  function init() as void
+      m.grp = m.top.FindNode("grp")
+      m.lbl = m.top.FindNode("lbl")
+      m.lib = m.top.FindNode("SampleComponentLib")
+      m.lblText = m.top.FindNode("lblText")
+      m.lib.observeField("loadStatus", "onLoadStatusChanged")
+      m.top.observeField("mk", "onSet")
+      m.grp.setFocus(true)
+  end function
+
+  function onLoadStatusChanged() as void
+      if (m.lib.loadStatus = "ready")
+          'Load Main Screen
+	  	  m.mainScreen = CreateObject("roSGNode", "MainScreen")
+          m.grp.removeChild(m.lbl)
+          m.lbl = invalid
+	      m.grp.appendChild(m.mainScreen)
+	  else if (m.lib.loadStatus = "failed")
+      	  m.lblText.text="Can't connect to server"
+      endif
+  end function
+  function onSet() as void
+    m.lib.uri=m.top.mk
+  end function
+]]>
+</script>
+</component>
